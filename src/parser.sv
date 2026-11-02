@@ -1,7 +1,7 @@
 module parser #(
-    localparam int BYTE = 8
+    localparam BYTE = 8
 )(
-    input logic clk, rst_n,
+    input logic clk, rst_n, rd_en,
     input logic [16*BYTE-1:0] rx_message,
     output logic [BYTE-1:0] row_index, col_index, pixel_value,
     output logic valid_message
@@ -26,10 +26,10 @@ module parser #(
             col_index <= 'b0;
             pixel_value <= 'b0;
         end
-        else if (valid_message) begin          
-            row_index <= msg[13][3:0]*100 + msg[12][3:0]*10 + msg[11][3:0];         
-            col_index <= msg[8][3:0]*100 + msg[7][3:0]*10 + msg[6][3:0];  
-            pixel_value <= msg[3][3:0]*100 + msg[2][3:0]*10 + msg[1][3:0];  
+        else if (valid_message && rd_en) begin          
+            row_index <= BYTE'(msg[13][3:0])*8'd100 + BYTE'(msg[12][3:0])*8'd10 + BYTE'(msg[11][3:0]);         
+            col_index <= BYTE'(msg[8][3:0])*8'd100 + BYTE'(msg[7][3:0])*8'd10 + BYTE'(msg[6][3:0]);  
+            pixel_value <= BYTE'(msg[3][3:0])*8'd100 + BYTE'(msg[2][3:0])*8'd10 + BYTE'(msg[1][3:0]);  
         end
     end
     always_comb begin
