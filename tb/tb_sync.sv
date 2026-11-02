@@ -17,11 +17,6 @@ module tb_sync;
 
     always #5 clk = ~clk;           //100 MHz 
 
-    sync dut (.clk(clk), .cpu_resetn(cpu_resetn), .btnc(btnc), .sw(sw), .uart_rxd(uart_rxd),
-              .rst_n(rst_n), .btnc_s(btnc_s), .sw_s(sw_s), .rxd_s(rxd_s));
-
-    always #5 clk = ~clk;                       // 100 MHz clock, rising edge every 10 ns
-
     initial begin
 
         // test 1: power-up - design starts in reset, released after 2 clocks
