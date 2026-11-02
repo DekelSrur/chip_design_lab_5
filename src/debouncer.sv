@@ -1,36 +1,60 @@
-`timescale 1ns / 1ps
+`timescale 1ns/1ps
 
 module debouncer #(
-    parameter int DEBOUNCE_CYCLES = 1_000_000
+    parameter DEBOUNCE_CYCLES = 1_000_000
 )(
-    input  logic clk,
-    input  logic rst,
-    input  logic btn_in,
+    input logic clk,
+    input logic rst_n,
+    input logic btn_in,
+    input logic [15:0] sw_in,
 
-    output logic btn_db
+    output logic btn_db,
+    output logic [15:0] sw_db
 );
 
-    localparam int CW = (DEBOUNCE_CYCLES > 1) ? $clog2(DEBOUNCE_CYCLES) : 1 ; //counter width
-    logic [CW-1:0] cnt;                                                       // window counter
+//localparam
+    localparam N = 17;                                                      //1 button + 16 switchers
+    localparam CW = (DEBOUNCE_CYCLES > 1) ? %clog2(DEBOUNCE_CYCLES) : 1;    //counter width
 
-    always_ff @(posedge clk) begin                  //zero coutner when reset
-        if (rst) begin
-            cnt <= '0;
-            btn_db <= 1'b0;
-        end
+//inputs
+    logic [N-1:0] din;
+    logic [N-1:0] dout;
 
-        else if (btn_in == btn_db) begin            //if exit == entry, then we dont change 
-            cnt <= '0;
-        end
+    assign din    = {sw_in, btn_in};
+    assign btn_db = dout[0];
+    assign sw_db  = dout[N-1:1];
 
-        else if (cnt == CW'(DEBOUNCE_CYCLES - 1)) begin   //exit != entry, change
-            btn_db <= btn_in;
-            cnt <= '0;
-        end  
+//per bit debouncer: each input has its on counter
+    genvar i;
+    generate
+        for (i = 0; i < n; i++) begin: DB_BIT
+            logic [CW-1:0] cnt;                 //window counter
+            logic q;                            //clean value
 
-        else begin
-            cnt <= cnt + 1'b1;                      //add bit if going into next cycle
-        end
-    end
+            assign dout[i] = q;
+
+            always_ff @(posedge clk or negedge rst_n) begin
+                if (!rst_n) begin
+                    cnt <= '0;
+                    q <= 1'b0;
+                end
+
+                else if (din[q] == q) begin
+                    cnt <= '0;
+                end
+
+                else if (cnt == DEBOUNCE_CYCLES - 1) begin
+                    q <= din[i];
+                    cnt = '0;
+                end
+
+                else begin
+                    cnt <= cnt + 1'b1;
+                end
+            end
+        end                
+    endgenerate  
 
 endmodule
+
+
