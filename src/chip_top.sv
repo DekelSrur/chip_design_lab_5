@@ -88,7 +88,8 @@ module chip_top#(
 
 //rx path
     RX_fsm #( .CLKS_PER_BIT(CLKS_PER_BIT)) 
-    u_RX_fsm ( .clk(clk), .rst_n(rst_n), .rx(rx_data), .msg(msg), .valid_message(valid_message)
+    u_RX_fsm ( .clk(clk), .rst_n(rst_n), .rx(rx_data), .msg(msg) ,
+              .msg_valid(msg_valid) 
     );
 
     rx_parser #(
