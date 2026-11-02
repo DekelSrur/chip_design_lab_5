@@ -7,7 +7,7 @@ module parser #(
     output logic valid_message
 ); 
 
-    localparam [7:0] MSG_STRT = 8'h7B; // "{"
+    localparam MSG_STRT = 8'h7B; // "{"
     localparam ROW_LET = 8'h52;  // "R"
     localparam COL_LET = 8'h43;  // "C"
     localparam VAL_LET = 8'h56;  // "V"
