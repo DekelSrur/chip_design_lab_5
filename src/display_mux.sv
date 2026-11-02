@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 module display_mux (
-    input logic rx_mode                 //0 = tx_mode, 1 = rx_mode
+    input logic rx_mode,                 //0 = tx_mode, 1 = rx_mode
     // TX mode values
     input  logic [7:0]  byte_val,       // T0
     input  logic [1:0]  speed_sel,      // T1

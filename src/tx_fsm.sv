@@ -5,7 +5,7 @@ module tx_fsm #(
     parameter DELAY_100MS = 10_000_000,
     parameter DELAY_200MS = 20_000_000
 )(
-    input logic clk
+    input logic clk,
     input logic rst_n,
     input logic start,
     input logic [7:0] byte_val,
@@ -48,7 +48,7 @@ module tx_fsm #(
 
 //block 1 - state register
     always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst) curr_st <= IDLE;
+        if (!rst_n) curr_st <= IDLE;
         else curr_st <= next;
     end
 
@@ -58,28 +58,28 @@ module tx_fsm #(
             2'd0: row_len = 9'd1;
             2'd1: row_len = 9'd32;
             2'd2: row_len = 9'd128;
-            defualt: row_len = 9'd256;
+            default: row_len = 9'd256;
         endcase
 
         unique case (speed_sel)                 // 0 = no delay
             2'd1: delay_len = DELAY_50MS;
             2'd2: delay_len = DELAY_100MS;
-            defualt: delay_len = DELAY_200MS;
+            default: delay_len = DELAY_200MS;
         endcase
 
         eol = ({1'b0, col_cnt} == row_len - 1'b1);
         last_row = (rows_sent == row_len - 1'b1);
         delay_done = (speed_sel == 2'd0) || (delay_cnt == delay_len - 1'b1);
         
-        next = curr_st;                         //deafult is crurrent state
-        unique case 
+        next = curr_st;                         //default is crurrent state
+        unique case(curr_st) 
             IDLE: if(start) next = SEND_DATA;
             SEND_DATA: next = WAIT_DATA;
             WAIT_DATA: if(tx_done) next = SEND_SP;
             SEND_SP: next = WAIT_SP;
             WAIT_SP: if(tx_done) begin
                 if(eol) next = SEND_CR;
-                else next = delay;
+                else next = DELAY;
             end
             SEND_CR: next = WAIT_CR;
             WAIT_CR: if(tx_done) next = SEND_LF;
@@ -89,13 +89,13 @@ module tx_fsm #(
                 else next = DELAY;
             end
             DELAY: if(delay_done) next = SEND_DATA;
-            deafult: next = IDLE;
+            default: next = IDLE;
         endcase
     end
 
 //block 3 - registerd outputs
     always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst) begin
+        if (!rst_n) begin
             tx_start   <= 1'b0;
             tx_data    <= '0;
             busy       <= 1'b0;
@@ -108,7 +108,7 @@ module tx_fsm #(
         else begin
             busy <= (next != IDLE);
 
-            unique case
+            unique case (next)
                 SEND_DATA: begin
                     tx_start <= 1'b1;
                     tx_data <= byte_val;
@@ -130,7 +130,7 @@ module tx_fsm #(
                     tx_data <= 8'h0A;           //ascii line feed
                 end
 
-                deafult: tx_start <= 1'b0;
+                default: tx_start <= 1'b0;
 
             endcase
 
