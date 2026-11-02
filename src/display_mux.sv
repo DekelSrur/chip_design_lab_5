@@ -8,7 +8,7 @@ module display_mux (
     input  logic [1:0]  count_sel,      // T2
     input  logic [8:0]  rows_sent,      // T3 
 
-        // RX mode values
+    // RX mode values
     input  logic [7:0]  row_idx,        // T3
     input  logic [7:0]  col_idx,        // T2
     // T1: reserved (generated here, no input)
