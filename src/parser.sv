@@ -1,20 +1,20 @@
 module parser #(
-    localparam int BYTE = 8
+    localparam BYTE = 8
 )(
-    input logic clk, rst_n,
+    input logic clk, rst_n, rd_en,
     input logic [16*BYTE-1:0] rx_message,
     output logic [BYTE-1:0] row_index, col_index, pixel_value,
     output logic valid_message
-);
+); 
 
-    localparam int MSG_STRT = 8'h7B; // "{"
-    localparam int ROW_LET = 8'h52;  // "R"
-    localparam int COL_LET = 8'h43;  // "C"
-    localparam int VAL_LET = 8'h56;  // "V"
-    localparam int COMMA = 8'h2C;    // ","
-    localparam int MSG_CLS = 8'h7D;  // "}"
-    localparam int ZERO = 8'h30;     // "0"
-    localparam int NINE = 8'h39;     // "9"
+    localparam MSG_STRT = 8'h7B; // "{"
+    localparam ROW_LET = 8'h52;  // "R"
+    localparam COL_LET = 8'h43;  // "C"
+    localparam VAL_LET = 8'h56;  // "V"
+    localparam COMMA = 8'h2C;    // ","
+    localparam MSG_CLS = 8'h7D;  // "}"
+    localparam ZERO = 8'h30;     // "0"
+    localparam NINE = 8'h39;     // "9"
 
     logic [15:0][BYTE-1:0] msg;
 
@@ -26,10 +26,10 @@ module parser #(
             col_index <= 'b0;
             pixel_value <= 'b0;
         end
-        else if (valid_message) begin          
-            row_index <= msg[13][3:0]*100 + msg[12][3:0]*10 + msg[11][3:0];         
-            col_index <= msg[8][3:0]*100 + msg[7][3:0]*10 + msg[6][3:0];  
-            pixel_value <= msg[3][3:0]*100 + msg[2][3:0]*10 + msg[1][3:0];  
+        else if (valid_message && rd_en) begin          
+            row_index <= BYTE'(msg[13][3:0])*8'd100 + BYTE'(msg[12][3:0])*8'd10 + BYTE'(msg[11][3:0]);         
+            col_index <= BYTE'(msg[8][3:0])*8'd100 + BYTE'(msg[7][3:0])*8'd10 + BYTE'(msg[6][3:0]);  
+            pixel_value <= BYTE'(msg[3][3:0])*8'd100 + BYTE'(msg[2][3:0])*8'd10 + BYTE'(msg[1][3:0]);  
         end
     end
     always_comb begin

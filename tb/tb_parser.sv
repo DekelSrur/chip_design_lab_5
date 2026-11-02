@@ -4,13 +4,13 @@ module tb_parser;
 
     localparam int BYTE = 8;
 
-    logic clk, rst_n;
+    logic clk, rst_n, rd_en;
     logic [127:0] rx_message;
     logic [BYTE-1:0] row_index, col_index, pixel_value;
     logic valid_message;
 
     parser dut(
-        .clk(clk), .rst_n(rst_n),
+        .clk(clk), .rst_n(rst_n), .rd_en(rd_en),
         .rx_message(rx_message),
         .row_index(row_index), .col_index(col_index), .pixel_value(pixel_value),
         .valid_message(valid_message)
