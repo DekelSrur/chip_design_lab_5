@@ -21,14 +21,15 @@ logic [31:0] last_digits;
 logic [7:0]  last_dps, last_an;
 
 task automatic reset_test; //activates a reset pulse, make sure to see idx<=3d'0, an<=8'hFF, seg<=7'h7F, dp<=1'b1
-        reset_done = 0;
-        @(posedge clk);
-        rst_n = 0;
-        @(negedge clk);
-        rst_n = 1;     #20;
-        assert(an == 8'hFF && seg == 7'h7F && dp)
-            else $display (" failed reset: an=%h seg=%h  dp=%b", 
+    reset_done = 0;
+    @(posedge clk);
+    rst_n = 0;
+    @(negedge clk);
+    assert(an == 8'hFF && seg == 7'h7F && dp)
+        else $display (" failed reset: an=%h seg=%h  dp=%b", 
                                    an,   seg,    dp);
+    rst_n = 1;     #10;
+    #10;
     reset_done = 1;
     endtask
 
@@ -75,7 +76,7 @@ end
 logic [2:0] k;
 
 always @(negedge clk) begin // checks if the generated 7segments are valid
-    if (reset_done)
+    if (reset_done) begin
         k = 3'($clog2(z));                                    
         assert (seg == expected_seg(last_digits[k*4 +: 4]))
             else $display("digit %0d: seg=%b expected %b", 
@@ -83,6 +84,7 @@ always @(negedge clk) begin // checks if the generated 7segments are valid
         assert (dp == ~last_dps[k])
             else $display("digit %0d: dp=%b expected %b", 
                                   k,    dp,         ~last_dps[k]);
+    end
 end
 
 int count;
@@ -103,9 +105,8 @@ always @(negedge clk) begin // checks if the switch rate between digits equals "
         end
         count = 1;
     end
-    else
-        count++;
-        last_an = an;
+    else if (count != 0) count++;
+    last_an = an;
 end
 
 initial begin
