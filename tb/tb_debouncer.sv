@@ -7,6 +7,7 @@ module tb_debouncer;
     logic clk = 0;
     logic rst_n = 0;
     logic [15:0] sw_in = '0;
+    logic btn_in = 0;
     logic btn_db;
     logic [15:0] sw_db;
 

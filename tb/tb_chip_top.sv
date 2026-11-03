@@ -2,7 +2,7 @@
 
 module tb_chip_top;
 
-    localparam CPB = 8;              // clocks per bit in simulation
+    localparam CPB = 64;              // clocks per bit in simulation
     localparam T_BIT = CPB * 10;     // one bit = 80 ns
 
     logic clk = 0, cpu_resetn = 0;
