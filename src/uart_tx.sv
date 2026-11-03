@@ -20,7 +20,7 @@ module uart_tx #(
     logic [9:0]     shift_reg;              // frame = {stop, data[7:0], start}
 
     always_ff @(posedge clk or negedge rst_n) begin
-        if (rst) begin                      //default
+        if (!rst_n) begin                      //default
             tx_done <= 1'b0;                    
             tx <= 1'b1;
             tx_busy <= 1'b0;

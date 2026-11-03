@@ -10,7 +10,7 @@ module cfg_latch (
 
     output logic start,
     output logic [7:0] byte_val,
-    output logic [1:0] speed_cel,
+    output logic [1:0] speed_sel,
     output logic [1:0] count_sel
 );
 
@@ -25,6 +25,7 @@ module cfg_latch (
             start <= 1'b0;
             byte_val <= '0;
             speed_sel <= '0;
+            count_sel <= '0;
         end
 
         else begin

@@ -87,16 +87,14 @@ module chip_top#(
     );
 
 //rx path
-    rx_fsm #( .CLKS_PER_BIT(CLKS_PER_BIT)) 
-    u_RX_fsm ( .clk(clk), .rst_n(rst_n), .rx(rx_data), .()
-
+    RX_fsm #( .CLKS_PER_BIT(CLKS_PER_BIT)) 
+    u_RX_fsm ( .clk(clk), .rst_n(rst_n), .rx(rxd_s), 
+    .msg(msg), .msg_valid(msg_valid)
     );
 
-    rx_parser #(
-
-    ) u_rx_parser (
-        .clk(clk), .rst_n(rst_n), .rx_message(), .row_index(), .col_index(),
-        .pixel_value(), .valid_message()
+    parser u_parser (
+        .clk(clk), .rst_n(rst_n), .rd_en(rx_en) ,.rx_message(msg), .row_index(row_idx),
+        .col_index(col_idx), .pixel_value(pix_val), .valid_message()
     );
 
 //display
@@ -107,10 +105,9 @@ module chip_top#(
         .digits(digits), .dps(dps), .dash(dash)
     );
 
-    seg7_ctrl #(
-
-    ) u_seg7_ctrl(
-
+    seg7_ctrl #(.REFRESH_DIV(REFRESH_DIV)) u_seg7_ctrl(
+    .clk(clk), .rst_n(rst_n), .digits(digits), 
+    .dps(dps), .an(an), .seg(seg), .dp(dp)
     );
 
 

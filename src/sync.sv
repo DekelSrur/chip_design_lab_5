@@ -5,7 +5,7 @@ module sync(
     input logic cpu_resetn,
     input logic btnc,
     input logic [15:0] sw,
-    input logic uart_rxd_s
+    input logic uart_rxd,
 
     output logic rst_n,
     output logic btnc_s,
@@ -20,7 +20,7 @@ module sync(
         if (!cpu_resetn)
             rst_ff <= 2'b00;            
         else
-            rst <= {rst_ff[0], 1'b1};
+            rst_ff <= {rst_ff[0], 1'b1};
     end        
 
     assign rst_n = rst_ff[1];

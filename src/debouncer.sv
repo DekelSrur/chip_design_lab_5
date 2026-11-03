@@ -14,7 +14,7 @@ module debouncer #(
 
 //localparam
     localparam N = 17;                                                      //1 button + 16 switchers
-    localparam CW = (DEBOUNCE_CYCLES > 1) ? %clog2(DEBOUNCE_CYCLES) : 1;    //counter width
+    localparam CW = (DEBOUNCE_CYCLES > 1) ? $clog2(DEBOUNCE_CYCLES) : 1;    //counter width
 
 //inputs
     logic [N-1:0] din;
@@ -27,7 +27,7 @@ module debouncer #(
 //per bit debouncer: each input has its on counter
     genvar i;
     generate
-        for (i = 0; i < n; i++) begin: DB_BIT
+        for (i = 0; i < N; i++) begin: DB_BIT
             logic [CW-1:0] cnt;                 //window counter
             logic q;                            //clean value
 
@@ -39,13 +39,13 @@ module debouncer #(
                     q <= 1'b0;
                 end
 
-                else if (din[q] == q) begin
+                else if (din[i] == q) begin
                     cnt <= '0;
                 end
 
                 else if (cnt == DEBOUNCE_CYCLES - 1) begin
                     q <= din[i];
-                    cnt = '0;
+                    cnt <= '0;
                 end
 
                 else begin
