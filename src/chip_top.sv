@@ -89,7 +89,7 @@ module chip_top#(
 //rx path
     RX_fsm #( .CLKS_PER_BIT(CLKS_PER_BIT)) 
     u_RX_fsm ( .clk(clk), .rst_n(rst_n), .rx(rxd_s), 
-    .msg(msg), .msg_valid(msg_valid)
+               .msg(msg), .msg_valid(msg_valid)
     );
 
     parser u_parser (
