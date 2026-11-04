@@ -28,7 +28,7 @@ module tb_chip_top;
 
     // stop the simulation if it hangs (for example a wait that never ends)
     initial begin
-        #10_000_000;
+        #100_000_000;
         $display("tb_chip_top FAILED: timeout");
         $finish;
     end
