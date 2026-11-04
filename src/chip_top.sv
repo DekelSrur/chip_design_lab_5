@@ -28,6 +28,8 @@ module chip_top#(
     logic btn_db;
     logic [15:0] sw_s;
     logic [15:0] sw_db;
+    logic rxd_s;                            //synchronized uart rx line
+    logic rx_mode;                          //sw_db[15]: 0 = TX mode, 1 = RX mode
     // TX path
     logic start;
     logic busy;
@@ -40,8 +42,6 @@ module chip_top#(
     logic [8:0] rows_sent;
     logic [16:0] bytes_sent;
     // RX path
-    logic [7:0] rx_data;
-    logic rx_valid;
     logic [127:0] msg;
     logic msg_valid;
     logic [7:0] row_idx, col_idx, pix_val;
