@@ -1,10 +1,12 @@
+`timescale 1ns/1ps
+
 module parser #(
     localparam BYTE = 8
 )(
-    input logic clk, rst_n, rd_en,
+    input logic clk, rst_n, msg_valid,
     input logic [16*BYTE-1:0] rx_message,
     output logic [BYTE-1:0] row_index, col_index, pixel_value,
-    output logic valid_message
+    output logic correct_format
 ); 
 
     localparam MSG_STRT = 8'h7B; // "{"
@@ -26,15 +28,15 @@ module parser #(
             col_index <= 'b0;
             pixel_value <= 'b0;
         end
-        else if (valid_message && rd_en) begin          
+        else if (correct_format && msg_valid) begin          
             row_index <= BYTE'(msg[13][3:0])*8'd100 + BYTE'(msg[12][3:0])*8'd10 + BYTE'(msg[11][3:0]);         
             col_index <= BYTE'(msg[8][3:0])*8'd100 + BYTE'(msg[7][3:0])*8'd10 + BYTE'(msg[6][3:0]);  
             pixel_value <= BYTE'(msg[3][3:0])*8'd100 + BYTE'(msg[2][3:0])*8'd10 + BYTE'(msg[1][3:0]);  
         end
     end
     always_comb begin
-        valid_message = 'b0;
-        valid_message = (msg[15] == MSG_STRT) &&
+        correct_format = 'b0;
+        correct_format = (msg[15] == MSG_STRT) &&
                         (msg[14] == ROW_LET) &&
                         (msg[13] >= ZERO) && (msg[13] <= NINE) && 
                         (msg[12] >= ZERO) && (msg[12] <= NINE) && 

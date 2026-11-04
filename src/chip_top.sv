@@ -52,7 +52,7 @@ module chip_top#(
 
 //mode select
     assign rx_mode = sw_db[15];             //debounced mode switch
-    assign rx_en = rx_mode & ~busy;         //RX starts only after a running TX transfer ends
+   // assign rx_en = rx_mode & ~busy;         //RX starts only after a running TX transfer ends
     assign led15 = rx_mode;
 
 //input conditioning    
@@ -93,8 +93,8 @@ module chip_top#(
     );
 
     parser u_parser (
-        .clk(clk), .rst_n(rst_n), .rd_en(rx_en) ,.rx_message(msg), .row_index(row_idx),
-        .col_index(col_idx), .pixel_value(pix_val), .valid_message()
+        .clk(clk), .rst_n(rst_n), .msg_valid(msg_valid), .rx_message(msg), .row_index(row_idx),
+        .col_index(col_idx), .pixel_value(pix_val), .correct_format()
     );
 
 //display
