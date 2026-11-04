@@ -15,7 +15,7 @@ module display_mux (
     input  logic [7:0]  pix_val,        // T0
 
     output logic [31:0] digits,         
-    output logic [7:0] dps,             //decimal point per digit
+    output logic [7:0] dps           //decimal point per digit
 );
 
     logic [8:0] count_val;

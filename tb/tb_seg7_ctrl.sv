@@ -3,14 +3,14 @@ module tb_seg7_ctrl;
 
 localparam int REFRESH_DIV = 4; 
 
-logic clk, rst_n;
+logic clk, rst_n, rx_mode;
 logic [31:0] digits;
 logic [7:0] an, dps;
 logic [6:0] seg;
 logic dp;
 
 seg7_ctrl #(.REFRESH_DIV(REFRESH_DIV)) dut (
-    .clk(clk), .rst_n(rst_n),
+    .clk(clk), .rst_n(rst_n), .rx_mode(rx_mode),
     .digits(digits), .an(an), .dps(dps),
     .seg(seg),
     .dp(dp)
@@ -114,6 +114,7 @@ initial begin
     digits = 32'b0;
     dps = 8'b0;
     last_an = 8'hFF;
+    rx_mode = 0;
     
     reset_test(); 
     

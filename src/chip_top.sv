@@ -105,7 +105,7 @@ module chip_top#(
     );
 
     seg7_ctrl #(.REFRESH_DIV(REFRESH_DIV)) u_seg7_ctrl(
-    .clk(clk), .rst_n(rst_n), .digits(digits), 
+    .clk(clk), .rst_n(rst_n), .rx_mode(rx_mode), .digits(digits), 
     .dps(dps), .an(an), .seg(seg), .dp(dp)
     );
 

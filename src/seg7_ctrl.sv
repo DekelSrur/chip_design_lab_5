@@ -5,6 +5,7 @@ module seg7_ctrl#(
 )(
     input  logic clk,
     input  logic rst_n,
+    input  logic rx_mode,
     input  logic [31:0] digits,
     input  logic [7:0] dps,
 
@@ -38,11 +39,12 @@ module seg7_ctrl#(
     end
 
     logic [3:0] hex;
-    assign hex = digits[idx*4 +: 4];
+    logic [6:0] hex2seg;
+    assign hex = digits[idx * 4 +: 4];
 
     //hex to segments
-    function automatic logic [6:0] hex2seg (input logic [3:0] h); //4bit value -> 7 segment display
-        case (h)
+    always_comb begin //4bit value -> 7 segment display
+        case (hex)
             4'h0: hex2seg = 7'b1000000;     //0
             4'h1: hex2seg = 7'b1111001;     //1
             4'h2: hex2seg = 7'b0100100;     //2
@@ -60,7 +62,8 @@ module seg7_ctrl#(
             4'hE: hex2seg = 7'b0000110;     //E
             default: hex2seg = 7'b0001110;  //F
         endcase
-    endfunction
+        if ((idx == 3'b010 || idx == 3'b011) && rx_mode) hex2seg = 7'b0111111;     
+    end
 
     //registerd outputs
     always_ff @(posedge clk or negedge rst_n) begin
@@ -72,7 +75,7 @@ module seg7_ctrl#(
 
         else begin
             an <= ~(8'b0000_0001 << idx);    
-            seg <= hex2seg(hex);
+            seg <= hex2seg;
             dp <= ~dps[idx];
         end
     end

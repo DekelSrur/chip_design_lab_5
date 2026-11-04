@@ -128,7 +128,7 @@ module tb_chip_top;
         sw[15] = 1;                             // switch to RX mode
         #200;
         send_msg("{R012,C200,V255}");
-        if (led15 !== 1 || dut.digits !== 32'h0CC8_00FF || dut.dash !== 8'b0000_1100) begin
+        if (led15 !== 1 || dut.digits !== 32'h0CC8_00FF) begin
             $display("Test 4 FAILED: LED15=%b display %h", led15, dut.digits);
             errors++;
         end

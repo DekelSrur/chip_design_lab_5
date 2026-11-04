@@ -4,16 +4,16 @@ module tb_parser;
 
     localparam int BYTE = 8;
 
-    logic clk, rst_n, rd_en;
+    logic clk, rst_n, msg_valid;
     logic [127:0] rx_message;
     logic [BYTE-1:0] row_index, col_index, pixel_value;
-    logic valid_message;
+    logic correct_format;
 
     parser dut(
-        .clk(clk), .rst_n(rst_n), .rd_en(rd_en),
+        .clk(clk), .rst_n(rst_n), .msg_valid(msg_valid),
         .rx_message(rx_message),
         .row_index(row_index), .col_index(col_index), .pixel_value(pixel_value),
-        .valid_message(valid_message)
+        .correct_format(correct_format)
     );
 
     initial clk = 1'b0;
@@ -38,6 +38,6 @@ module tb_parser;
  
     initial begin
         $monitor("t=%0d ns  msg=%s  valid=%b  row=%h col=%h pix=%h",
-                 $time, rx_message, valid_message, row_index, col_index, pixel_value);
+                 $time, rx_message, correct_format, row_index, col_index, pixel_value);
     end
 endmodule
