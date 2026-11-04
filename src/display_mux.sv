@@ -16,7 +16,6 @@ module display_mux (
 
     output logic [31:0] digits,         
     output logic [7:0] dps,             //decimal point per digit
-    output logic [7:0] dash             //'-' when nedded
 );
 
     logic [8:0] count_val;
@@ -43,7 +42,6 @@ module display_mux (
                        t1_int, t1_frac,                         //t1
                        byte_val };                              //t0
             dps  = 8'b0000_1000;                                //decimal point t1
-            dash = 8'b0000_0000;
         end
         else begin                                              //rx layout
             digits = { row_idx,                                 //t3
@@ -51,7 +49,6 @@ module display_mux (
                        8'h00,                                   //t1: shown as "--"
                        pix_val };                               //t0
             dps  = 8'b0000_0000;
-            dash = 8'b0000_1100;                                //t1 digits show '-'
         end
     end
 

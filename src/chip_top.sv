@@ -48,7 +48,6 @@ module chip_top#(
     // display
     logic [31:0] digits;
     logic [7:0] dps;
-    logic [7:0] dash;
 
 //mode select
     assign rx_mode = sw_db[15];             //debounced mode switch
@@ -102,7 +101,7 @@ module chip_top#(
         .rx_mode(rx_mode),
         .byte_val(byte_val), .speed_sel(speed_sel), .count_sel(count_sel), .rows_sent(rows_sent),
         .row_idx(row_idx), .col_idx(col_idx), .pix_val(pix_val),
-        .digits(digits), .dps(dps), .dash(dash)
+        .digits(digits), .dps(dps)
     );
 
     seg7_ctrl #(.REFRESH_DIV(REFRESH_DIV)) u_seg7_ctrl(
