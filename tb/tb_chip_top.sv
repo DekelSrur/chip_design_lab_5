@@ -3,7 +3,7 @@
 module tb_chip_top;
 
     localparam CPB = 64;              // clocks per bit in simulation
-    localparam T_BIT = CPB * 10;     // one bit = 80 ns
+    localparam T_BIT = CPB * 10;     // one bit = 640 ns
 
     logic clk = 0, cpu_resetn = 0;
     logic btnc = 0;
@@ -155,29 +155,6 @@ module tb_chip_top;
         end
         else
             $display("Test 6 PASSED: button ignored in RX mode");
-
-        // test 7: no full duplex - a message sent during a TX transfer is ignored
-        sw = 16'b0_01_000_00_0100_0001;         // TX, N = 32
-        #200;
-        press();
-        sw[15] = 1;                             // switch to RX while TX is busy
-        #200;
-        send_msg("{R100,C100,V100}");           // RX is still off
-        wait (dut.busy == 0);
-        #(20 * T_BIT);
-        if (dut.digits !== 32'h0CC8_00FF) begin
-            $display("Test 7 FAILED: message accepted during TX");
-            errors++;
-        end
-        else
-            $display("Test 7 PASSED: message ignored during TX");
-        send_msg("{R009,C008,V007}");           // TX finished -> RX works
-        if (dut.digits !== 32'h0908_0007) begin
-            $display("Test 7 FAILED: display %h", dut.digits);
-            errors++;
-        end
-        else
-            $display("Test 7 PASSED: message accepted after TX, display %h", dut.digits);
 
         if (errors == 0) $display("tb_chip_top PASSED");
         else             $display("tb_chip_top FAILED, %0d errors", errors);

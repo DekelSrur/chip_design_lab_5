@@ -22,16 +22,25 @@ module parser #(
 
     assign msg = rx_message;
 
+    logic [9:0] row_val, col_val, pix_val;  // up to 999, needs 10 bits
+
+    always_comb begin
+        row_val = 10'(msg[13][3:0])*10'd100 + 10'(msg[12][3:0])*10'd10 + 10'(msg[11][3:0]);
+        col_val = 10'(msg[8][3:0])*10'd100  + 10'(msg[7][3:0])*10'd10  + 10'(msg[6][3:0]);
+        pix_val = 10'(msg[3][3:0])*10'd100  + 10'(msg[2][3:0])*10'd10  + 10'(msg[1][3:0]);
+    end
+
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             row_index <= 'b0;
             col_index <= 'b0;
             pixel_value <= 'b0;
         end
-        else if (correct_format && msg_valid) begin          
-            row_index <= BYTE'(msg[13][3:0])*8'd100 + BYTE'(msg[12][3:0])*8'd10 + BYTE'(msg[11][3:0]);         
-            col_index <= BYTE'(msg[8][3:0])*8'd100 + BYTE'(msg[7][3:0])*8'd10 + BYTE'(msg[6][3:0]);  
-            pixel_value <= BYTE'(msg[3][3:0])*8'd100 + BYTE'(msg[2][3:0])*8'd10 + BYTE'(msg[1][3:0]);  
+        else if (correct_format && msg_valid &&
+                 row_val <= 10'd255 && col_val <= 10'd255 && pix_val <= 10'd255) begin
+            row_index   <= row_val[7:0];
+            col_index   <= col_val[7:0];
+            pixel_value <= pix_val[7:0];
         end
     end
     always_comb begin
